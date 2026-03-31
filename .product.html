@@ -1,0 +1,71 @@
+// PRODUCTS LIST
+const products = [
+  {id:1, name:"Mobile Phone", price:50000, img:"https://via.placeholder.com/200"},
+  {id:2, name:"Laptop", price:120000, img:"https://via.placeholder.com/200"},
+  {id:3, name:"Shoes", price:3000, img:"https://via.placeholder.com/200"},
+  {id:4, name:"Headphones", price:2500, img:"https://via.placeholder.com/200"}
+];
+
+// CART INITIALIZATION
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// FUNCTION: DISPLAY PRODUCTS ON HOME PAGE
+function displayProducts() {
+  const container = document.getElementById("products");
+  if (!container) return;
+
+  container.innerHTML = ""; // Clear previous content
+
+  products.forEach(product => {
+    container.innerHTML += `
+      <div class="product">
+        <img src="${product.img}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>Rs ${product.price}</p>
+        <button onclick="viewProduct(${product.id})">View</button>
+      </div>
+    `;
+  });
+
+  updateCartCount();
+}
+
+// FUNCTION: VIEW PRODUCT DETAIL PAGE
+function viewProduct(id) {
+  localStorage.setItem("productId", id); // store selected product ID
+  window.location.href = "product.html"; // redirect to product page
+}
+
+// FUNCTION: LOAD PRODUCT DETAIL
+function loadProduct() {
+  const id = localStorage.getItem("productId");
+  const product = products.find(p => p.id == id);
+  const container = document.getElementById("product-detail");
+
+  if (!container || !product) return;
+
+  container.innerHTML = `
+    <img src="${product.img}" width="250" alt="${product.name}">
+    <h2>${product.name}</h2>
+    <p>Price: Rs ${product.price}</p>
+    <button onclick="addToCart(${product.id})">Add to Cart</button>
+  `;
+}
+
+// FUNCTION: ADD PRODUCT TO CART
+function addToCart(id) {
+  cart.push(id);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+  alert("Product added to cart!");
+}
+
+// FUNCTION: UPDATE CART COUNT
+function updateCartCount() {
+  const el = document.getElementById("cart-count");
+  if (el) el.innerText = cart.length;
+}
+
+// FUNCTION: LOAD CART PAGE
+function loadCart() {
+  const container = document.getElementById("cart-items");
